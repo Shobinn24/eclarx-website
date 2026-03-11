@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E-CLARX LLC — Built by Operators, for Operators</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0F172A;
+      --navy-mid: #162035;
+      --navy-light: #1E2D45;
+      --electric: #38BDF8;
+      --electric-dim: rgba(56,189,248,0.15);
+      --slate: #94A3B8;
+      --slate-dim: #475569;
+      --white: #F1F5F9;
+      --white-dim: rgba(241,245,249,0.7);
+      --border: rgba(148,163,184,0.1);
+      --border-bright: rgba(56,189,248,0.2);
+      --font-display: 'Syne', sans-serif;
+      --font-serif: 'Instrument Serif', serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--navy); color: var(--white); font-family: var(--font-display); overflow-x: hidden; cursor: none; }
+
+    /* CURSOR */
+    .cursor { width: 8px; height: 8px; background: var(--electric); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); }
+    .cursor-ring { width: 32px; height: 32px; border: 1px solid rgba(56,189,248,0.35); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: all 0.18s ease; }
+    .cursor-ring.hovered { width: 52px; height: 52px; border-color: var(--electric); background: rgba(56,189,248,0.05); }
+
+    /* NOISE */
+    body::after { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9000; opacity: 0.5; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; padding: 16px 48px; display: flex; align-items: center; justify-content: space-between; transition: background 0.4s, border-color 0.4s; border-bottom: 1px solid transparent; }
+    nav.scrolled { background: rgba(15,23,42,0.94); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom-color: var(--border); }
+    .nav-logo { text-decoration: none; display: flex; align-items: center; }
+    .nav-logo img { height: 42px; width: auto; object-fit: contain; }
+    .nav-links { display: flex; gap: 24px; list-style: none; align-items: center; }
+    .nav-links a { font-size: 11px; font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase; color: var(--slate); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--white); }
+    .nav-divider { width: 1px; height: 16px; background: var(--border); }
+    .nav-external { color: var(--electric) !important; display: flex !important; align-items: center; gap: 5px; }
+    .nav-cta { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--navy); background: var(--electric); padding: 10px 22px; text-decoration: none; clip-path: polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%); transition: background 0.2s, transform 0.2s; }
+    .nav-cta:hover { background: var(--white); transform: translateY(-1px); }
+
+    /* HERO */
+    .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 56px 88px; position: relative; overflow: hidden; }
+    .hero-bg-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(56,189,248,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,0.04) 1px,transparent 1px); background-size: 64px 64px; mask-image: radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 80%); }
+    .hero-glow { position: absolute; top: 10%; right: 5%; width: 600px; height: 600px; background: radial-gradient(circle,rgba(56,189,248,0.07) 0%,transparent 70%); pointer-events: none; }
+    .hero-glow2 { position: absolute; bottom: 10%; left: 0; width: 400px; height: 400px; background: radial-gradient(circle,rgba(56,189,248,0.04) 0%,transparent 70%); pointer-events: none; }
+    .hero-logo { margin-bottom: 36px; opacity: 0; animation: fadeUp 0.7s ease 0s forwards; }
+    .hero-logo img { height: 88px; width: auto; object-fit: contain; filter: drop-shadow(0 0 32px rgba(56,189,248,0.2)); }
+    .hero-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--electric); margin-bottom: 24px; display: flex; align-items: center; gap: 14px; opacity: 0; animation: fadeUp 0.7s ease 0.15s forwards; }
+    .hero-eyebrow-line { width: 40px; height: 1px; background: var(--electric); opacity: 0.6; }
+    .live-dot { display: inline-flex; align-items: center; gap: 6px; }
+    .live-dot::before { content: ''; width: 6px; height: 6px; background: var(--electric); border-radius: 50%; animation: pulse 2s ease infinite; }
+    .hero-headline { font-size: clamp(48px,7.5vw,108px); font-weight: 800; line-height: 0.93; letter-spacing: -0.025em; max-width: 1000px; opacity: 0; animation: fadeUp 0.8s ease 0.3s forwards; }
+    .hero-headline em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--electric); }
+    .hero-descriptor { margin-top: 36px; max-width: 520px; font-size: 16px; font-weight: 400; line-height: 1.75; color: var(--slate); opacity: 0; animation: fadeUp 0.8s ease 0.5s forwards; }
+    .hero-actions { margin-top: 52px; display: flex; gap: 24px; align-items: center; opacity: 0; animation: fadeUp 0.8s ease 0.7s forwards; }
+    .btn-primary { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); background: var(--electric); padding: 16px 40px; text-decoration: none; clip-path: polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%); transition: all 0.2s; display: inline-block; }
+    .btn-primary:hover { background: var(--white); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(56,189,248,0.25); }
+    .btn-outline { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate); text-decoration: none; display: flex; align-items: center; gap: 10px; padding: 16px 0; border-bottom: 1px solid var(--border); transition: color 0.2s, border-color 0.2s; }
+    .btn-outline:hover { color: var(--white); border-color: var(--electric); }
+    .btn-outline svg { transition: transform 0.2s; }
+    .btn-outline:hover svg { transform: translateX(5px); }
+    .hero-metrics { position: absolute; right: 56px; bottom: 88px; display: flex; flex-direction: column; gap: 24px; opacity: 0; animation: fadeIn 1s ease 1s forwards; }
+    .metric-item { text-align: right; }
+    .metric-number { font-size: 32px; font-weight: 800; color: var(--electric); letter-spacing: -0.02em; line-height: 1; }
+    .metric-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--slate-dim); margin-top: 4px; }
+
+    /* TICKER */
+    .ticker { background: var(--navy-mid); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 14px 0; overflow: hidden; }
+    .ticker-track { display: flex; animation: marquee 25s linear infinite; white-space: nowrap; }
+    .ticker-item { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--slate-dim); padding: 0 40px; display: inline-flex; align-items: center; gap: 14px; }
+    .ticker-item .sep { color: var(--electric); font-size: 8px; }
+
+    /* SECTIONS */
+    .section-inner { max-width: 1200px; margin: 0 auto; padding: 120px 56px; }
+    .section-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--electric); margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+    .section-label::before { content: ''; width: 28px; height: 1px; background: var(--electric); opacity: 0.5; }
+    h2.section-title { font-size: clamp(34px,4.5vw,60px); font-weight: 800; line-height: 1.0; letter-spacing: -0.025em; }
+    h2.section-title em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--electric); }
+
+    /* ABOUT */
+    .about-section { background: var(--navy); }
+    .about-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 96px; margin-top: 72px; align-items: start; }
+    .about-copy p { font-size: 17px; line-height: 1.85; color: var(--white-dim); margin-bottom: 20px; }
+    .about-copy p strong { color: var(--white); }
+    .about-copy .highlight { color: var(--electric); font-weight: 600; }
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 48px; }
+    .stat-box { background: var(--navy-mid); padding: 28px 24px; transition: background 0.2s; }
+    .stat-box:hover { background: var(--navy-light); }
+    .stat-val { font-size: 38px; font-weight: 800; color: var(--electric); letter-spacing: -0.03em; line-height: 1; }
+    .stat-desc { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate-dim); margin-top: 8px; }
+    .services-stack { display: flex; flex-direction: column; gap: 12px; }
+    .svc-card { background: var(--navy-mid); border: 1px solid var(--border); padding: 26px 28px; position: relative; overflow: hidden; transition: border-color 0.3s, background 0.3s; }
+    .svc-card::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--electric); transform: scaleY(0); transform-origin: bottom; transition: transform 0.3s ease; }
+    .svc-card:hover::after { transform: scaleY(1); }
+    .svc-card:hover { border-color: var(--border-bright); background: var(--navy-light); }
+    .svc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .svc-title { font-size: 14px; font-weight: 700; }
+    .svc-icon { font-size: 18px; opacity: 0.5; }
+    .svc-desc { font-size: 13px; line-height: 1.65; color: var(--slate); }
+
+    /* STACK */
+    .stack-section { background: var(--navy-mid); }
+    .stack-intro { max-width: 600px; font-size: 16px; line-height: 1.7; color: var(--slate); margin-top: 24px; }
+    .stack-categories { margin-top: 64px; display: flex; flex-direction: column; gap: 48px; }
+    .stack-category-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--slate-dim); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+    .stack-pills { display: flex; flex-wrap: wrap; gap: 10px; }
+    .stack-pill { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--white-dim); background: var(--navy-light); border: 1px solid var(--border); padding: 10px 18px; letter-spacing: 0.04em; transition: all 0.2s; cursor: default; }
+    .stack-pill:hover { border-color: var(--electric); color: var(--electric); background: var(--electric-dim); }
+
+    /* CASE STUDIES */
+    .cases-section { background: var(--navy); }
+    .cases-list { margin-top: 72px; border: 1px solid var(--border); }
+    .case-row { display: grid; grid-template-columns: 56px 1fr 260px; gap: 40px; padding: 48px; border-bottom: 1px solid var(--border); transition: background 0.2s; align-items: start; position: relative; }
+    .case-row:last-child { border-bottom: none; }
+    .case-row:hover { background: var(--navy-mid); }
+    .case-row::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--electric); transform: scaleX(0); transition: transform 0.4s ease; transform-origin: left; }
+    .case-row:hover::before { transform: scaleX(1); }
+    .case-num { font-family: var(--font-mono); font-size: 11px; color: var(--electric); letter-spacing: 0.1em; padding-top: 6px; }
+    .case-header { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+    .case-product-logo { height: 34px; width: auto; object-fit: contain; border-radius: 4px; }
+    .case-title { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
+    .case-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .case-tag { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--electric); background: var(--electric-dim); border: 1px solid var(--border-bright); padding: 4px 10px; }
+    .case-desc { font-size: 14px; line-height: 1.75; color: var(--slate); }
+    .case-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--electric); text-decoration: none; border-bottom: 1px solid var(--border-bright); padding-bottom: 2px; transition: border-color 0.2s, color 0.2s; }
+    .case-link:hover { border-color: var(--electric); color: var(--white); }
+    .case-metrics { display: flex; flex-direction: column; gap: 16px; }
+    .case-metric { background: var(--navy-light); border: 1px solid var(--border); padding: 16px 20px; }
+    .case-metric-val { font-size: 20px; font-weight: 800; color: var(--electric); letter-spacing: -0.02em; }
+    .case-metric-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate-dim); margin-top: 4px; }
+
+    /* CONTACT */
+    .contact-section { background: var(--navy-mid); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 96px; margin-top: 72px; align-items: start; }
+    .contact-left p { font-size: 16px; line-height: 1.8; color: var(--slate); margin-bottom: 40px; }
+    .contact-info { display: flex; flex-direction: column; gap: 12px; }
+    .contact-info-item { display: flex; align-items: center; gap: 16px; padding: 18px 24px; background: var(--navy); border: 1px solid var(--border); transition: border-color 0.2s; text-decoration: none; }
+    .contact-info-item:hover { border-color: var(--border-bright); }
+    .contact-info-icon { width: 36px; height: 36px; background: var(--electric-dim); border: 1px solid var(--border-bright); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+    .contact-info-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate-dim); margin-bottom: 4px; }
+    .contact-info-value { font-size: 14px; font-weight: 600; color: var(--white); }
+    .contact-form { display: flex; flex-direction: column; gap: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-group label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--slate-dim); }
+    .form-group input, .form-group textarea, .form-group select { background: var(--navy); border: 1px solid var(--border); color: var(--white); font-family: var(--font-display); font-size: 14px; padding: 14px 16px; outline: none; transition: border-color 0.2s; width: 100%; appearance: none; }
+    .form-group select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2338BDF8' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; cursor: pointer; }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: var(--slate-dim); }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--electric); }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+    .form-submit { font-family: var(--font-display); font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); background: var(--electric); border: none; padding: 18px 40px; cursor: pointer; clip-path: polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%); transition: all 0.2s; width: 100%; margin-top: 8px; }
+    .form-submit:hover { background: var(--white); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(56,189,248,0.2); }
+
+    /* FOOTER */
+    footer { background: #0a1020; border-top: 1px solid var(--border); }
+    .footer-top { max-width: 1200px; margin: 0 auto; padding: 56px 56px 40px; display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 48px; }
+    .footer-logo { text-decoration: none; display: inline-block; margin-bottom: 16px; }
+    .footer-logo img { height: 40px; width: auto; object-fit: contain; }
+    .footer-tagline { font-size: 13px; line-height: 1.7; color: var(--slate-dim); margin-bottom: 20px; }
+    .footer-social { display: flex; gap: 10px; }
+    .footer-social a { width: 34px; height: 34px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--slate-dim); text-decoration: none; font-size: 14px; transition: border-color 0.2s, color 0.2s; }
+    .footer-social a:hover { border-color: var(--electric); color: var(--electric); }
+    .footer-col-title { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--white); margin-bottom: 20px; }
+    .footer-col-links { display: flex; flex-direction: column; gap: 12px; }
+    .footer-col-links a { font-size: 13px; color: var(--slate-dim); text-decoration: none; transition: color 0.2s; display: flex; align-items: center; gap: 6px; }
+    .footer-col-links a:hover { color: var(--electric); }
+    .footer-col-links .ext { font-size: 10px; opacity: 0.5; }
+    .footer-bottom { max-width: 1200px; margin: 0 auto; padding: 20px 56px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    .footer-copy { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; color: var(--slate-dim); }
+    .footer-legal { display: flex; gap: 24px; flex-wrap: wrap; }
+    .footer-legal a { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate-dim); text-decoration: none; transition: color 0.2s; }
+    .footer-legal a:hover { color: var(--electric); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    @keyframes pulse { 0%,100% { opacity: 1; box-shadow: 0 0 0 0 rgba(56,189,248,0.4); } 50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(56,189,248,0); } }
+    .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* HAMBURGER BUTTON */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 36px; height: 36px;
+      background: none; border: 1px solid var(--border);
+      cursor: pointer; padding: 8px;
+      transition: border-color 0.2s;
+    }
+    .nav-hamburger:hover { border-color: var(--electric); }
+    .nav-hamburger span {
+      display: block; width: 100%; height: 1px;
+      background: var(--white);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+    /* MOBILE DRAWER */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15,23,42,0.98);
+      backdrop-filter: blur(20px);
+      z-index: 150;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      padding: 80px 32px 40px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .mobile-menu.open { display: flex; opacity: 1; }
+    .mobile-menu a {
+      font-size: 20px; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      color: var(--slate); text-decoration: none;
+      padding: 14px 0; width: 100%; text-align: center;
+      border-bottom: 1px solid var(--border);
+      transition: color 0.2s;
+    }
+    .mobile-menu a:hover { color: var(--white); }
+    .mobile-menu a.electric { color: var(--electric); }
+    .mobile-menu .mobile-cta {
+      margin-top: 24px;
+      font-size: 14px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--navy); background: var(--electric);
+      padding: 18px 48px; text-decoration: none;
+      clip-path: polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);
+      border-bottom: none;
+    }
+    .mobile-menu .mobile-cta:hover { background: var(--white); color: var(--navy); }
+
+    /* TABLET — 768px to 1024px */
+    @media (max-width: 1024px) and (min-width: 769px) {
+      nav { padding: 16px 32px; }
+      .nav-links { gap: 16px; }
+      .nav-links a { font-size: 10px; }
+      .hero { padding: 0 40px 80px; }
+      .hero-metrics { right: 40px; bottom: 80px; gap: 18px; }
+      .metric-number { font-size: 26px; }
+      .section-inner { padding: 96px 40px; }
+      .about-grid { gap: 56px; }
+      .contact-grid { gap: 48px; }
+      .stack-grid { grid-template-columns: repeat(3,1fr); }
+      .case-row { grid-template-columns: 48px 1fr 200px; gap: 28px; padding: 36px; }
+      .case-title { font-size: 20px; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; padding: 48px 40px 32px; }
+      .footer-bottom { padding: 20px 40px; }
+    }
+
+    /* MOBILE — up to 768px */
+    @media (max-width: 768px) {
+      body { cursor: auto; }
+      .cursor, .cursor-ring { display: none; }
+
+      /* NAV */
+      nav { padding: 14px 20px; }
+      .nav-links { display: none; }
+      .nav-cta { display: none; }
+      .nav-hamburger { display: flex; }
+
+      /* HERO */
+      .hero { padding: 120px 20px 64px; min-height: 100vh; justify-content: center; }
+      .hero-logo img { height: 64px; }
+      .hero-logo { margin-bottom: 28px; }
+      .hero-eyebrow { font-size: 9px; gap: 10px; flex-wrap: wrap; }
+      .hero-eyebrow-line { width: 24px; }
+      .hero-headline { font-size: clamp(38px, 10vw, 56px); line-height: 0.95; }
+      .hero-descriptor { font-size: 15px; margin-top: 24px; }
+      .hero-actions { margin-top: 36px; flex-direction: column; align-items: flex-start; gap: 16px; }
+      .btn-primary { width: 100%; text-align: center; padding: 16px 24px; }
+      .hero-metrics { display: none; }
+      .hero-glow { width: 300px; height: 300px; }
+      .hero-glow2 { display: none; }
+
+      /* SECTIONS */
+      .section-inner { padding: 64px 20px; }
+      h2.section-title { font-size: clamp(28px, 8vw, 40px); }
+
+      /* ABOUT */
+      .about-grid { grid-template-columns: 1fr; gap: 40px; margin-top: 40px; }
+      .about-copy p { font-size: 15px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .stat-val { font-size: 30px; }
+
+      /* SERVICES */
+      .services-stack { gap: 10px; }
+      .svc-card { padding: 20px; }
+
+      /* STACK */
+      .stack-intro { font-size: 14px; }
+      .stack-categories { gap: 32px; margin-top: 40px; }
+      .stack-pills { gap: 8px; }
+      .stack-pill { font-size: 11px; padding: 8px 14px; }
+
+      /* CASE STUDIES */
+      .cases-list { margin-top: 40px; }
+      .case-row {
+        grid-template-columns: 1fr;
+        gap: 20px; padding: 28px 20px;
+      }
+      .case-num { display: none; }
+      .case-header { flex-wrap: wrap; gap: 10px; }
+      .case-product-logo { height: 28px; }
+      .case-title { font-size: 20px; }
+      .case-metrics {
+        flex-direction: row;
+        gap: 10px;
+      }
+      .case-metric { flex: 1; }
+      .case-metric-val { font-size: 16px; }
+      .case-tags { gap: 6px; }
+      .case-desc { font-size: 13px; }
+
+      /* CONTACT */
+      .contact-grid { grid-template-columns: 1fr; gap: 40px; margin-top: 40px; }
+      .contact-left p { font-size: 15px; margin-bottom: 24px; }
+      .contact-info { gap: 10px; }
+      .contact-info-item { padding: 14px 16px; gap: 12px; }
+      .contact-info-icon { width: 32px; height: 32px; font-size: 13px; }
+      .contact-info-value { font-size: 13px; }
+      .form-row { grid-template-columns: 1fr; }
+      .form-group input, .form-group textarea, .form-group select { font-size: 16px; } /* prevent iOS zoom */
+      .form-submit { font-size: 13px; padding: 16px; }
+
+      /* FOOTER */
+      .footer-top {
+        grid-template-columns: 1fr;
+        gap: 36px; padding: 40px 20px 28px;
+      }
+      .footer-bottom {
+        padding: 16px 20px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .footer-legal { gap: 16px; flex-wrap: wrap; }
+      .footer-copy { font-size: 9px; }
+      .footer-logo img { height: 34px; }
+    }
+
+    /* SMALL PHONES — up to 375px */
+    @media (max-width: 375px) {
+      .hero-headline { font-size: 34px; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .case-metrics { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a href="#" class="nav-logo"><img src="logo.jpg" alt="E-CLARX LLC" /></a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#stack">Stack</a></li>
+      <li><a href="#work">Work</a></li>
+      <li class="nav-divider"></li>
+      <li><a href="https://konvert-it.vercel.app/" target="_blank" class="nav-external">KonvertIt ↗</a></li>
+      <li><a href="https://web-production-f49df.up.railway.app/cases" target="_blank" class="nav-external">Case Raft ↗</a></li>
+      <li><a href="https://www.ebay.com/str/eclarxllc" target="_blank" class="nav-external">eBay Store ↗</a></li>
+      <li><a href="https://pro.fiverr.com/s/o8l5D8x" target="_blank" class="nav-external">Fiverr ↗</a></li>
+      <li class="nav-divider"></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Get In Touch</a>
+    <button class="nav-hamburger" id="hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- MOBILE MENU DRAWER -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#about" class="mobile-link">About</a>
+    <a href="#stack" class="mobile-link">Stack</a>
+    <a href="#work" class="mobile-link">Work</a>
+    <a href="https://konvert-it.vercel.app/" target="_blank" class="mobile-link electric">KonvertIt ↗</a>
+    <a href="https://web-production-f49df.up.railway.app/cases" target="_blank" class="mobile-link electric">Case Raft ↗</a>
+    <a href="https://www.ebay.com/str/eclarxllc" target="_blank" class="mobile-link electric">eBay Store ↗</a>
+    <a href="https://pro.fiverr.com/s/o8l5D8x" target="_blank" class="mobile-link electric">Fiverr ↗</a>
+    <a href="#contact" class="mobile-cta mobile-link">Get In Touch</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-glow2"></div>
+    <div class="hero-logo"><img src="logo.jpg" alt="E-CLARX LLC" /></div>
+    <div class="hero-eyebrow">
+      <span class="hero-eyebrow-line"></span>
+      <span class="live-dot">Operational — Live</span>
+      <span class="hero-eyebrow-line"></span>
+      E-CLARX LLC
+    </div>
+    <h1 class="hero-headline">We don't just<br />build software.<br />We <em>run it.</em></h1>
+    <p class="hero-descriptor">E-CLARX is a technology and commerce company that ships full-stack software, runs multi-platform e-commerce operations, and delivers SaaS solutions — all from real operational experience.</p>
+    <div class="hero-actions">
+      <a href="#work" class="btn-primary">View Our Work</a>
+      <a href="#contact" class="btn-outline">Start a Project <svg width="16" height="10" viewBox="0 0 16 10" fill="none"><path d="M1 5h14M10 1l4 4-4 4" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+    </div>
+    <div class="hero-metrics">
+      <div class="metric-item"><div class="metric-number">4+</div><div class="metric-label">Platforms Active</div></div>
+      <div class="metric-item"><div class="metric-number">4</div><div class="metric-label">Products Shipped</div></div>
+      <div class="metric-item"><div class="metric-number">∞</div><div class="metric-label">Lines Deployed</div></div>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-track">
+      <span class="ticker-item">React <span class="sep">◆</span></span><span class="ticker-item">Node.js <span class="sep">◆</span></span><span class="ticker-item">Python <span class="sep">◆</span></span><span class="ticker-item">Flask <span class="sep">◆</span></span><span class="ticker-item">PostgreSQL <span class="sep">◆</span></span><span class="ticker-item">Next.js <span class="sep">◆</span></span><span class="ticker-item">Amazon <span class="sep">◆</span></span><span class="ticker-item">eBay API <span class="sep">◆</span></span><span class="ticker-item">Shopify <span class="sep">◆</span></span><span class="ticker-item">Vercel <span class="sep">◆</span></span><span class="ticker-item">Railway <span class="sep">◆</span></span><span class="ticker-item">Redis <span class="sep">◆</span></span><span class="ticker-item">JWT Auth <span class="sep">◆</span></span><span class="ticker-item">Playwright <span class="sep">◆</span></span>
+      <span class="ticker-item">React <span class="sep">◆</span></span><span class="ticker-item">Node.js <span class="sep">◆</span></span><span class="ticker-item">Python <span class="sep">◆</span></span><span class="ticker-item">Flask <span class="sep">◆</span></span><span class="ticker-item">PostgreSQL <span class="sep">◆</span></span><span class="ticker-item">Next.js <span class="sep">◆</span></span><span class="ticker-item">Amazon <span class="sep">◆</span></span><span class="ticker-item">eBay API <span class="sep">◆</span></span><span class="ticker-item">Shopify <span class="sep">◆</span></span><span class="ticker-item">Vercel <span class="sep">◆</span></span><span class="ticker-item">Railway <span class="sep">◆</span></span><span class="ticker-item">Redis <span class="sep">◆</span></span><span class="ticker-item">JWT Auth <span class="sep">◆</span></span><span class="ticker-item">Playwright <span class="sep">◆</span></span>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section class="about-section" id="about">
+    <div class="section-inner">
+      <div class="section-label">About E-CLARX</div>
+      <h2 class="section-title reveal">Built by operators,<br /><em>for operators.</em></h2>
+      <div class="about-grid">
+        <div class="about-copy reveal">
+          <p>E-CLARX LLC is a <strong>technology and commerce company</strong> founded on a simple principle: every product we ship comes from real operational friction — not theory.</p>
+          <p>From <span class="highlight">marketplace automation</span> across Amazon, Walmart, eBay, and Shopify, to full-stack SaaS tools deployed in production — we build the software we actually needed and couldn't find.</p>
+          <p>Our stack is modern, our approach is lean, and our results are measurable. Whether you need a custom web application, e-commerce infrastructure, or a freelance development partner — <strong>we move fast and ship things that work.</strong></p>
+          <div class="stats-grid">
+            <div class="stat-box"><div class="stat-val">4+</div><div class="stat-desc">Platforms Operated</div></div>
+            <div class="stat-box"><div class="stat-val">4</div><div class="stat-desc">Products Shipped</div></div>
+            <div class="stat-box"><div class="stat-val">100%</div><div class="stat-desc">Custom-Built Stack</div></div>
+            <div class="stat-box"><div class="stat-val">∞</div><div class="stat-desc">Edge Cases Solved</div></div>
+          </div>
+        </div>
+        <div class="services-stack reveal">
+          <div class="svc-card"><div class="svc-header"><div class="svc-title">Software & SaaS Development</div><div class="svc-icon">⚙️</div></div><p class="svc-desc">Full-stack web applications built with React, Node.js, Python, and Flask — deployed and production-ready on Vercel and Railway.</p></div>
+          <div class="svc-card"><div class="svc-header"><div class="svc-title">E-Commerce Operations</div><div class="svc-icon">📦</div></div><p class="svc-desc">Active storefronts across Amazon, Walmart, eBay, and Shopify — with custom automation and tooling built entirely in-house.</p></div>
+          <div class="svc-card"><div class="svc-header"><div class="svc-title">Freelance Development</div><div class="svc-icon">🛠</div></div><p class="svc-desc">Custom web development for businesses — React, Node.js, Python, Flask, Shopify, and WordPress. Clean code, real results.</p></div>
+          <div class="svc-card"><div class="svc-header"><div class="svc-title">Marketplace Automation</div><div class="svc-icon">🤖</div></div><p class="svc-desc">Proprietary tools for product discovery, automated listing, price monitoring, and arbitrage — battle-tested at scale.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section class="stack-section" id="stack">
+    <div class="section-inner">
+      <div class="section-label">What We Use</div>
+      <h2 class="section-title reveal">Our <em>actual</em> stack.</h2>
+      <p class="stack-intro reveal">No buzzwords. No slides. This is what's running in production right now across our software and commerce operations.</p>
+      <div class="stack-categories">
+        <div class="reveal"><div class="stack-category-label">Frontend</div><div class="stack-pills"><div class="stack-pill">React</div><div class="stack-pill">Next.js</div><div class="stack-pill">HTML5 / CSS3</div><div class="stack-pill">Tailwind CSS</div><div class="stack-pill">JavaScript (ES6+)</div></div></div>
+        <div class="reveal"><div class="stack-category-label">Backend</div><div class="stack-pills"><div class="stack-pill">Node.js</div><div class="stack-pill">Python</div><div class="stack-pill">Flask</div><div class="stack-pill">REST APIs</div><div class="stack-pill">JWT Auth</div><div class="stack-pill">SQLAlchemy</div></div></div>
+        <div class="reveal"><div class="stack-category-label">Data & Infrastructure</div><div class="stack-pills"><div class="stack-pill">PostgreSQL</div><div class="stack-pill">Redis</div><div class="stack-pill">Vercel</div><div class="stack-pill">Railway</div><div class="stack-pill">Git / GitHub</div></div></div>
+        <div class="reveal"><div class="stack-category-label">Commerce & Testing</div><div class="stack-pills"><div class="stack-pill">eBay API</div><div class="stack-pill">Amazon SP-API</div><div class="stack-pill">Shopify</div><div class="stack-pill">Walmart API</div><div class="stack-pill">Playwright</div><div class="stack-pill">Jest</div><div class="stack-pill">Pytest</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CASE STUDIES -->
+  <section class="cases-section" id="work">
+    <div class="section-inner">
+      <div class="section-label">Case Studies</div>
+      <h2 class="section-title reveal">Proof, not <em>promises.</em></h2>
+      <div class="cases-list reveal">
+
+        <!-- KonvertIt -->
+        <div class="case-row">
+          <div class="case-num">01</div>
+          <div>
+            <div class="case-header">
+              <img src="konvertitlogo.jpg" alt="KonvertIt" class="case-product-logo" />
+              <div class="case-title">KonvertIt</div>
+            </div>
+            <div class="case-tags"><span class="case-tag">SaaS</span><span class="case-tag">React</span><span class="case-tag">Node.js</span><span class="case-tag">PostgreSQL</span><span class="case-tag">Redis</span></div>
+            <p class="case-desc"><strong>Problem:</strong> Sellers waste hours reformatting product data between Amazon, eBay, Walmart, and Shopify — each platform demands a unique CSV structure.<br /><br /><strong>Solution:</strong> A multi-marketplace product data conversion SaaS. Upload once, export everywhere. Deployed on Vercel and Railway with live database persistence and Redis caching.</p>
+            <a href="https://konvert-it.vercel.app/" target="_blank" class="case-link">View Live App ↗</a>
+          </div>
+          <div class="case-metrics">
+            <div class="case-metric"><div class="case-metric-val">4 Platforms</div><div class="case-metric-label">Supported</div></div>
+            <div class="case-metric"><div class="case-metric-val">Live</div><div class="case-metric-label">Production Deploy</div></div>
+          </div>
+        </div>
+
+        <!-- AutoFlip -->
+        <div class="case-row">
+          <div class="case-num">02</div>
+          <div>
+            <div class="case-header"><div class="case-title">AutoFlip</div></div>
+            <div class="case-tags"><span class="case-tag">Automation</span><span class="case-tag">Python</span><span class="case-tag">Flask</span><span class="case-tag">eBay API</span></div>
+            <p class="case-desc"><strong>Problem:</strong> Manual eBay arbitrage is slow and doesn't scale. Sell Pilot's listing cap was a hard ceiling.<br /><br /><strong>Solution:</strong> Built AutoFlip — a proprietary eBay arbitrage automation tool with product discovery, profit filtering (60% markup, 10% margin, $30–$60 range), automated listing, and a price monitoring dashboard.</p>
+            <a href="https://www.ebay.com/str/eclarxllc" target="_blank" class="case-link">Visit eBay Store ↗</a>
+          </div>
+          <div class="case-metrics">
+            <div class="case-metric"><div class="case-metric-val">60%+</div><div class="case-metric-label">Markup Target</div></div>
+            <div class="case-metric"><div class="case-metric-val">Profitable</div><div class="case-metric-label">Live Orders</div></div>
+          </div>
+        </div>
+
+        <!-- Case Raft -->
+        <div class="case-row">
+          <div class="case-num">03</div>
+          <div>
+            <div class="case-header">
+              <img src="caseraftlogo.jpg" alt="Case Raft" class="case-product-logo" />
+              <div class="case-title">Case Raft</div>
+            </div>
+            <div class="case-tags"><span class="case-tag">Legal Tech</span><span class="case-tag">Flask</span><span class="case-tag">React</span><span class="case-tag">PDF Generation</span><span class="case-tag">Clio Manage</span></div>
+            <p class="case-desc"><strong>Problem:</strong> Legal professionals spend excessive time manually compiling case summaries and generating formatted reports from Clio Manage data.<br /><br /><strong>Solution:</strong> A legal case summary and reporting tool that pulls data from Clio Manage and generates structured, print-ready PDF reports — saving hours of manual formatting per case.</p>
+            <a href="https://web-production-f49df.up.railway.app/cases" target="_blank" class="case-link">View App ↗</a>
+          </div>
+          <div class="case-metrics">
+            <div class="case-metric"><div class="case-metric-val">PDF</div><div class="case-metric-label">Print-Ready Output</div></div>
+            <div class="case-metric"><div class="case-metric-val">Clio</div><div class="case-metric-label">API Integrated</div></div>
+          </div>
+        </div>
+
+        <!-- TrendScout -->
+        <div class="case-row">
+          <div class="case-num">04</div>
+          <div>
+            <div class="case-header"><div class="case-title">TrendScout</div></div>
+            <div class="case-tags"><span class="case-tag">Market Research</span><span class="case-tag">Flask</span><span class="case-tag">React</span><span class="case-tag">PostgreSQL</span><span class="case-tag">JWT</span></div>
+            <p class="case-desc"><strong>Problem:</strong> eBay sellers lack a centralized tool to research market trends and pricing data before listing.<br /><br /><strong>Solution:</strong> A full-stack eBay market research dashboard with live price analytics, trend tracking, JWT authentication, and PostgreSQL persistence — deployed on Railway and Vercel.</p>
+          </div>
+          <div class="case-metrics">
+            <div class="case-metric"><div class="case-metric-val">Full-Stack</div><div class="case-metric-label">Architecture</div></div>
+            <div class="case-metric"><div class="case-metric-val">JWT</div><div class="case-metric-label">Secured Auth</div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact-section" id="contact">
+    <div class="section-inner">
+      <div class="section-label">Get In Touch</div>
+      <h2 class="section-title reveal">Let's build<br /><em>something real.</em></h2>
+      <div class="contact-grid">
+        <div class="contact-left reveal">
+          <p>Whether you need a custom web application, e-commerce automation, or a technical partner who actually ships — we're ready to talk. Tell us what you're building.</p>
+          <div class="contact-info">
+            <a href="mailto:info@eclarx.com" class="contact-info-item"><div class="contact-info-icon">✉️</div><div><div class="contact-info-label">Email</div><div class="contact-info-value">info@eclarx.com</div></div></a>
+            <a href="https://pro.fiverr.com/s/o8l5D8x" target="_blank" class="contact-info-item"><div class="contact-info-icon">🎯</div><div><div class="contact-info-label">Fiverr</div><div class="contact-info-value">Hire on Fiverr</div></div></a>
+            <a href="https://www.ebay.com/str/eclarxllc" target="_blank" class="contact-info-item"><div class="contact-info-icon">🛒</div><div><div class="contact-info-label">eBay Store</div><div class="contact-info-value">E-CLARX LLC Store</div></div></a>
+            <a href="https://github.com/Shobinn24" target="_blank" class="contact-info-item"><div class="contact-info-icon">⌨️</div><div><div class="contact-info-label">GitHub</div><div class="contact-info-value">github.com/Shobinn24</div></div></a>
+            <div class="contact-info-item"><div class="contact-info-icon">📍</div><div><div class="contact-info-label">Location</div><div class="contact-info-value">USA</div></div></div>
+          </div>
+        </div>
+        <div class="reveal">
+          <form class="contact-form" onsubmit="handleSubmit(event)">
+            <div class="form-row">
+              <div class="form-group"><label>First Name</label><input type="text" placeholder="John" required /></div>
+              <div class="form-group"><label>Last Name</label><input type="text" placeholder="Smith" required /></div>
+            </div>
+            <div class="form-group"><label>Email</label><input type="email" placeholder="john@company.com" required /></div>
+            <div class="form-group"><label>I'm interested in</label><select required><option value="" disabled selected>Select a service</option><option value="saas">SaaS / Web Application</option><option value="ecommerce">E-Commerce Automation</option><option value="freelance">Freelance Development</option><option value="other">Something Else</option></select></div>
+            <div class="form-group"><label>Tell us about your project</label><textarea placeholder="What are you building? What's the problem you're solving?" required></textarea></div>
+            <button type="submit" class="form-submit">Send Message →</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-top">
+      <div>
+        <a href="#" class="footer-logo"><img src="logo.jpg" alt="E-CLARX LLC" /></a>
+        <p class="footer-tagline">A technology and commerce company. Built by operators, for operators.</p>
+        <div class="footer-social">
+          <a href="mailto:info@eclarx.com" title="Email">✉</a>
+          <a href="https://github.com/Shobinn24" target="_blank" title="GitHub">⌨</a>
+          <a href="https://pro.fiverr.com/s/o8l5D8x" target="_blank" title="Fiverr">F</a>
+          <a href="https://www.ebay.com/str/eclarxllc" target="_blank" title="eBay">e</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Products</div>
+        <div class="footer-col-links">
+          <a href="https://konvert-it.vercel.app/" target="_blank">KonvertIt <span class="ext">↗</span></a>
+          <a href="https://web-production-f49df.up.railway.app/cases" target="_blank">Case Raft <span class="ext">↗</span></a>
+          <a href="https://www.ebay.com/str/eclarxllc" target="_blank">eBay Store <span class="ext">↗</span></a>
+          <a href="https://pro.fiverr.com/s/o8l5D8x" target="_blank">Fiverr Profile <span class="ext">↗</span></a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <div class="footer-col-links">
+          <a href="#about">About</a>
+          <a href="#stack">Our Stack</a>
+          <a href="#work">Case Studies</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Contact</div>
+        <div class="footer-col-links">
+          <a href="mailto:info@eclarx.com">info@eclarx.com</a>
+          <a href="https://github.com/Shobinn24" target="_blank">GitHub <span class="ext">↗</span></a>
+          <a href="https://pro.fiverr.com/s/o8l5D8x" target="_blank">Hire on Fiverr <span class="ext">↗</span></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 E-CLARX LLC. All rights reserved. Registered in the United States.</div>
+      <div class="footer-legal">
+        <a href="#privacy">Privacy Policy</a>
+        <a href="#terms">Terms of Service</a>
+        <a href="#disclaimer">Disclaimer</a>
+        <a href="mailto:info@eclarx.com">Legal Inquiries</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Hamburger menu
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      mobileMenu.classList.toggle('open');
+      document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+    });
+    document.querySelectorAll('.mobile-link').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('open');
+        mobileMenu.classList.remove('open');
+        document.body.style.overflow = '';
+      });
+    });
+
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.transform = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
+    });
+    function animateRing() {
+      rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+      ring.style.transform = `translate(${rx}px,${ry}px) translate(-50%,-50%)`;
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+    document.querySelectorAll('a,button,.svc-card,.case-row,.stack-pill').forEach(el => {
+      el.addEventListener('mouseenter', () => ring.classList.add('hovered'));
+      el.addEventListener('mouseleave', () => ring.classList.remove('hovered'));
+    });
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 40));
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 80); });
+    }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    function handleSubmit(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('.form-submit');
+      btn.textContent = 'Message Sent ✓'; btn.style.background = '#22d3ee'; btn.disabled = true;
+      setTimeout(() => { btn.textContent = 'Send Message →'; btn.style.background = ''; btn.disabled = false; e.target.reset(); }, 3000);
+    }
+  </script>
+</body>
+</html>
