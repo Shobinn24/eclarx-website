@@ -55,7 +55,7 @@
     .hero-glow { position: absolute; top: 10%; right: 5%; width: 600px; height: 600px; background: radial-gradient(circle,rgba(56,189,248,0.07) 0%,transparent 70%); pointer-events: none; }
     .hero-glow2 { position: absolute; bottom: 10%; left: 0; width: 400px; height: 400px; background: radial-gradient(circle,rgba(56,189,248,0.04) 0%,transparent 70%); pointer-events: none; }
     .hero-logo { margin-bottom: 36px; opacity: 0; animation: fadeUp 0.7s ease 0s forwards; }
-    .hero-logo img { height: 88px; width: auto; object-fit: contain; filter: drop-shadow(0 0 32px rgba(56,189,248,0.2)); }
+    .hero-logo img { height: 140px; width: auto; object-fit: contain; filter: drop-shadow(0 0 32px rgba(56,189,248,0.2)); }
     .hero-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--electric); margin-bottom: 24px; display: flex; align-items: center; gap: 14px; opacity: 0; animation: fadeUp 0.7s ease 0.15s forwards; }
     .hero-eyebrow-line { width: 40px; height: 1px; background: var(--electric); opacity: 0.6; }
     .live-dot { display: inline-flex; align-items: center; gap: 6px; }
@@ -128,7 +128,7 @@
     .case-row:hover::before { transform: scaleX(1); }
     .case-num { font-family: var(--font-mono); font-size: 11px; color: var(--electric); letter-spacing: 0.1em; padding-top: 6px; }
     .case-header { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
-    .case-product-logo { height: 34px; width: auto; object-fit: contain; border-radius: 4px; }
+    .case-product-logo { height: 52px; width: auto; object-fit: contain; border-radius: 4px; }
     .case-title { font-size: 24px; font-weight: 800; letter-spacing: -0.01em; }
     .case-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
     .case-tag { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--electric); background: var(--electric-dim); border: 1px solid var(--border-bright); padding: 4px 10px; }
@@ -423,7 +423,7 @@
     </div>
     <div class="hero-metrics">
       <div class="metric-item"><div class="metric-number">4+</div><div class="metric-label">Platforms Active</div></div>
-      <div class="metric-item"><div class="metric-number">4</div><div class="metric-label">Products Shipped</div></div>
+      <div class="metric-item"><div class="metric-number">2</div><div class="metric-label">Products Shipped</div></div>
       <div class="metric-item"><div class="metric-number">∞</div><div class="metric-label">Lines Deployed</div></div>
     </div>
   </section>
@@ -448,7 +448,7 @@
           <p>Our stack is modern, our approach is lean, and our results are measurable. Whether you need a custom web application, e-commerce infrastructure, or a freelance development partner — <strong>we move fast and ship things that work.</strong></p>
           <div class="stats-grid">
             <div class="stat-box"><div class="stat-val">4+</div><div class="stat-desc">Platforms Operated</div></div>
-            <div class="stat-box"><div class="stat-val">4</div><div class="stat-desc">Products Shipped</div></div>
+            <div class="stat-box"><div class="stat-val">2</div><div class="stat-desc">Products Shipped</div></div>
             <div class="stat-box"><div class="stat-val">100%</div><div class="stat-desc">Custom-Built Stack</div></div>
             <div class="stat-box"><div class="stat-val">∞</div><div class="stat-desc">Edge Cases Solved</div></div>
           </div>
@@ -494,33 +494,18 @@
               <div class="case-title">KonvertIt</div>
             </div>
             <div class="case-tags"><span class="case-tag">SaaS</span><span class="case-tag">React</span><span class="case-tag">Node.js</span><span class="case-tag">PostgreSQL</span><span class="case-tag">Redis</span></div>
-            <p class="case-desc"><strong>Problem:</strong> Sellers waste hours reformatting product data between Amazon, eBay, Walmart, and Shopify — each platform demands a unique CSV structure.<br /><br /><strong>Solution:</strong> A multi-marketplace product data conversion SaaS. Upload once, export everywhere. Deployed on Vercel and Railway with live database persistence and Redis caching.</p>
+            <p class="case-desc"><strong>Problem:</strong> Sellers waste hours reformatting product data between Amazon, eBay, and Walmart — each platform demands a unique CSV structure.<br /><br /><strong>Solution:</strong> A multi-marketplace product data conversion SaaS. Upload once, export everywhere. Deployed on Vercel and Railway with live database persistence and Redis caching.</p>
             <a href="https://konvert-it.vercel.app/" target="_blank" class="case-link">View Live App ↗</a>
           </div>
           <div class="case-metrics">
-            <div class="case-metric"><div class="case-metric-val">4 Platforms</div><div class="case-metric-label">Supported</div></div>
+            <div class="case-metric"><div class="case-metric-val">3 Platforms</div><div class="case-metric-label">Supported</div></div>
             <div class="case-metric"><div class="case-metric-val">Live</div><div class="case-metric-label">Production Deploy</div></div>
-          </div>
-        </div>
-
-        <!-- AutoFlip -->
-        <div class="case-row">
-          <div class="case-num">02</div>
-          <div>
-            <div class="case-header"><div class="case-title">AutoFlip</div></div>
-            <div class="case-tags"><span class="case-tag">Automation</span><span class="case-tag">Python</span><span class="case-tag">Flask</span><span class="case-tag">eBay API</span></div>
-            <p class="case-desc"><strong>Problem:</strong> Manual eBay arbitrage is slow and doesn't scale. Sell Pilot's listing cap was a hard ceiling.<br /><br /><strong>Solution:</strong> Built AutoFlip — a proprietary eBay arbitrage automation tool with product discovery, profit filtering (60% markup, 10% margin, $30–$60 range), automated listing, and a price monitoring dashboard.</p>
-            <a href="https://www.ebay.com/str/eclarxllc" target="_blank" class="case-link">Visit eBay Store ↗</a>
-          </div>
-          <div class="case-metrics">
-            <div class="case-metric"><div class="case-metric-val">60%+</div><div class="case-metric-label">Markup Target</div></div>
-            <div class="case-metric"><div class="case-metric-val">Profitable</div><div class="case-metric-label">Live Orders</div></div>
           </div>
         </div>
 
         <!-- Case Raft -->
         <div class="case-row">
-          <div class="case-num">03</div>
+          <div class="case-num">02</div>
           <div>
             <div class="case-header">
               <img src="caseraftlogo.jpg" alt="Case Raft" class="case-product-logo" />
@@ -533,20 +518,6 @@
           <div class="case-metrics">
             <div class="case-metric"><div class="case-metric-val">PDF</div><div class="case-metric-label">Print-Ready Output</div></div>
             <div class="case-metric"><div class="case-metric-val">Clio</div><div class="case-metric-label">API Integrated</div></div>
-          </div>
-        </div>
-
-        <!-- TrendScout -->
-        <div class="case-row">
-          <div class="case-num">04</div>
-          <div>
-            <div class="case-header"><div class="case-title">TrendScout</div></div>
-            <div class="case-tags"><span class="case-tag">Market Research</span><span class="case-tag">Flask</span><span class="case-tag">React</span><span class="case-tag">PostgreSQL</span><span class="case-tag">JWT</span></div>
-            <p class="case-desc"><strong>Problem:</strong> eBay sellers lack a centralized tool to research market trends and pricing data before listing.<br /><br /><strong>Solution:</strong> A full-stack eBay market research dashboard with live price analytics, trend tracking, JWT authentication, and PostgreSQL persistence — deployed on Railway and Vercel.</p>
-          </div>
-          <div class="case-metrics">
-            <div class="case-metric"><div class="case-metric-val">Full-Stack</div><div class="case-metric-label">Architecture</div></div>
-            <div class="case-metric"><div class="case-metric-val">JWT</div><div class="case-metric-label">Secured Auth</div></div>
           </div>
         </div>
 
@@ -566,7 +537,6 @@
             <a href="mailto:info@eclarx.com" class="contact-info-item"><div class="contact-info-icon">✉️</div><div><div class="contact-info-label">Email</div><div class="contact-info-value">info@eclarx.com</div></div></a>
             <a href="https://pro.fiverr.com/s/o8l5D8x" target="_blank" class="contact-info-item"><div class="contact-info-icon">🎯</div><div><div class="contact-info-label">Fiverr</div><div class="contact-info-value">Hire on Fiverr</div></div></a>
             <a href="https://www.ebay.com/str/eclarxllc" target="_blank" class="contact-info-item"><div class="contact-info-icon">🛒</div><div><div class="contact-info-label">eBay Store</div><div class="contact-info-value">E-CLARX LLC Store</div></div></a>
-            <a href="https://github.com/Shobinn24" target="_blank" class="contact-info-item"><div class="contact-info-icon">⌨️</div><div><div class="contact-info-label">GitHub</div><div class="contact-info-value">github.com/Shobinn24</div></div></a>
             <div class="contact-info-item"><div class="contact-info-icon">📍</div><div><div class="contact-info-label">Location</div><div class="contact-info-value">USA</div></div></div>
           </div>
         </div>
@@ -594,7 +564,6 @@
         <p class="footer-tagline">A technology and commerce company. Built by operators, for operators.</p>
         <div class="footer-social">
           <a href="mailto:info@eclarx.com" title="Email">✉</a>
-          <a href="https://github.com/Shobinn24" target="_blank" title="GitHub">⌨</a>
           <a href="https://pro.fiverr.com/s/o8l5D8x" target="_blank" title="Fiverr">F</a>
           <a href="https://www.ebay.com/str/eclarxllc" target="_blank" title="eBay">e</a>
         </div>
@@ -621,7 +590,6 @@
         <div class="footer-col-title">Contact</div>
         <div class="footer-col-links">
           <a href="mailto:info@eclarx.com">info@eclarx.com</a>
-          <a href="https://github.com/Shobinn24" target="_blank">GitHub <span class="ext">↗</span></a>
           <a href="https://pro.fiverr.com/s/o8l5D8x" target="_blank">Hire on Fiverr <span class="ext">↗</span></a>
         </div>
       </div>
