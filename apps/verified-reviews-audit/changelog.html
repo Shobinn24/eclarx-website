@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changelog — Verified Reviews Audit</title>
+  <meta name="description" content="Release notes for Verified Reviews Audit." />
+  <link rel="icon" type="image/png" href="/apps/verified-reviews-audit/vraicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0F172A; --navy-mid: #162035; --navy-light: #1E2D45;
+      --electric: #38BDF8; --electric-dim: rgba(56,189,248,0.15);
+      --slate: #94A3B8; --slate-dim: #475569;
+      --white: #F1F5F9; --white-dim: rgba(241,245,249,0.7);
+      --border: rgba(148,163,184,0.1); --border-bright: rgba(56,189,248,0.2);
+      --font-display: 'Syne', sans-serif; --font-serif: 'Instrument Serif', serif; --font-mono: 'DM Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--navy); color: var(--white); font-family: var(--font-display); }
+    nav { position: sticky; top: 0; z-index: 200; padding: 14px 40px; display: flex; align-items: center; justify-content: space-between; background: rgba(15,23,42,0.94); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); }
+    .nav-logo img { height: 36px; width: auto; }
+    .nav-links { display: flex; gap: 20px; list-style: none; align-items: center; flex-wrap: wrap; }
+    .nav-links a { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--slate); text-decoration: none; }
+    .nav-links a:hover, .nav-links a.active { color: var(--electric); }
+    .wrap { max-width: 880px; margin: 0 auto; padding: 72px 32px 96px; }
+    .page-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--electric); margin-bottom: 16px; }
+    h1 { font-size: clamp(34px,5vw,54px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.05; margin-bottom: 18px; }
+    h1 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--electric); }
+    .lede { font-size: 17px; line-height: 1.8; color: var(--slate); max-width: 640px; margin-bottom: 44px; }
+    h2 { font-size: 22px; font-weight: 700; margin: 44px 0 14px; }
+    h3 { font-size: 15px; font-weight: 700; margin: 26px 0 8px; color: var(--white); }
+    p, li { font-size: 15px; line-height: 1.8; color: var(--white-dim); }
+    ul, ol { padding-left: 22px; margin: 10px 0 18px; }
+    li { margin-bottom: 6px; }
+    a { color: var(--electric); }
+    strong { color: var(--white); }
+    code { font-family: var(--font-mono); font-size: 13px; background: var(--navy-light); border: 1px solid var(--border); padding: 2px 7px; border-radius: 3px; color: var(--white); }
+    .card { background: var(--navy-mid); border: 1px solid var(--border); padding: 24px 26px; margin: 18px 0; }
+    .card:hover { border-color: var(--border-bright); }
+    table { width: 100%; border-collapse: collapse; margin: 18px 0; }
+    th, td { text-align: left; padding: 12px 14px; border: 1px solid var(--border); font-size: 14px; line-height: 1.6; }
+    th { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--electric); background: var(--navy-mid); }
+    td { color: var(--white-dim); }
+    footer { border-top: 1px solid var(--border); padding: 36px 40px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+    footer span, footer a { font-family: var(--font-mono); font-size: 11px; color: var(--slate-dim); text-decoration: none; }
+    footer a:hover { color: var(--electric); }
+    .btn-primary { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); background: var(--electric); padding: 15px 36px; text-decoration: none; clip-path: polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%); display: inline-block; }
+    .btn-primary:hover { background: var(--white); }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="nav-logo"><img src="/logo.jpg" alt="E-CLARX LLC" /></a>
+    <ul class="nav-links">
+      <li><a href="/apps/verified-reviews-audit" >Overview</a></li>
+      <li><a href="/apps/verified-reviews-audit/docs" >Docs</a></li>
+      <li><a href="/apps/verified-reviews-audit/faq" >FAQ</a></li>
+      <li><a href="/apps/verified-reviews-audit/changelog" class="active">Changelog</a></li>
+      <li><a href="/apps/verified-reviews-audit/support" >Support</a></li>
+      <li><a href="/apps/verified-reviews-audit/privacy" >Privacy</a></li>
+    </ul>
+  </nav>
+  <main class="wrap">
+
+    <div class="page-eyebrow">Changelog</div>
+    <h1>What has <em>shipped.</em></h1>
+    <p class="lede">Every meaningful change to the app, newest first.</p>
+
+    <div class="card"><h3>July 20, 2026 — 1.1</h3>
+    <ul>
+      <li>The audit page now shows your latest audit's full breakdown when you open the app.</li>
+      <li>Production hosting with dedicated PostgreSQL; mandatory privacy webhooks live.</li>
+      <li>Public privacy policy, documentation, and this site.</li>
+    </ul></div>
+
+    <div class="card"><h3>July 19, 2026 — 1.0</h3>
+    <ul>
+      <li>CSV audits: upload a reviews export, get the full verdict breakdown with per-product detail.</li>
+      <li>Direct Loox and Judge.me connections — audit without an export. Credentials encrypted at rest.</li>
+      <li>Rating-gap analysis: verified buyers vs unmatched reviewers.</li>
+      <li>Storefront "audited reviews" badge as a theme app extension, with a display threshold you control.</li>
+      <li>Audit history.</li>
+      <li>Free and Pro plans through Shopify billing.</li>
+    </ul></div>
+  </main>
+  <footer>
+    <span>© 2026 E-CLARX LLC. All rights reserved.</span>
+    <span><a href="/">eclarx.com</a> · <a href="/apps/verified-reviews-audit/support">Support</a> · <a href="mailto:info@eclarx.com">info@eclarx.com</a></span>
+  </footer>
+</body>
+</html>
