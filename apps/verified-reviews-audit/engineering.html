@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Engineering Case Study — TallySeal Reviews Audit</title>
+  <meta name="description" content="How the TallySeal verification engine was validated: external ground truth, a measured error rate, and a release-gating known-answer battery." />
+  <link rel="icon" type="image/png" href="/apps/verified-reviews-audit/vraicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0F172A; --navy-mid: #162035; --navy-light: #1E2D45;
+      --electric: #38BDF8; --electric-dim: rgba(56,189,248,0.15);
+      --slate: #94A3B8; --slate-dim: #475569;
+      --white: #F1F5F9; --white-dim: rgba(241,245,249,0.7);
+      --border: rgba(148,163,184,0.1); --border-bright: rgba(56,189,248,0.2);
+      --font-display: 'Syne', sans-serif; --font-serif: 'Instrument Serif', serif; --font-mono: 'DM Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--navy); color: var(--white); font-family: var(--font-display); }
+    nav { position: sticky; top: 0; z-index: 200; padding: 14px 40px; display: flex; align-items: center; justify-content: space-between; background: rgba(15,23,42,0.94); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); }
+    .nav-logo img { height: 36px; width: auto; }
+    .nav-links { display: flex; gap: 20px; list-style: none; align-items: center; flex-wrap: wrap; }
+    .nav-links a { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--slate); text-decoration: none; }
+    .nav-links a:hover, .nav-links a.active { color: var(--electric); }
+    .wrap { max-width: 880px; margin: 0 auto; padding: 72px 32px 96px; }
+    .page-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--electric); margin-bottom: 16px; }
+    h1 { font-size: clamp(34px,5vw,54px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.05; margin-bottom: 18px; }
+    h1 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--electric); }
+    .lede { font-size: 17px; line-height: 1.8; color: var(--slate); max-width: 640px; margin-bottom: 44px; }
+    h2 { font-size: 22px; font-weight: 700; margin: 44px 0 14px; }
+    h3 { font-size: 15px; font-weight: 700; margin: 26px 0 8px; color: var(--white); }
+    p, li { font-size: 15px; line-height: 1.8; color: var(--white-dim); }
+    ul, ol { padding-left: 22px; margin: 10px 0 18px; }
+    li { margin-bottom: 6px; }
+    a { color: var(--electric); }
+    strong { color: var(--white); }
+    code { font-family: var(--font-mono); font-size: 13px; background: var(--navy-light); border: 1px solid var(--border); padding: 2px 7px; border-radius: 3px; color: var(--white); }
+    .card { background: var(--navy-mid); border: 1px solid var(--border); padding: 24px 26px; margin: 18px 0; }
+    .card:hover { border-color: var(--border-bright); }
+    table { width: 100%; border-collapse: collapse; margin: 18px 0; }
+    th, td { text-align: left; padding: 12px 14px; border: 1px solid var(--border); font-size: 14px; line-height: 1.6; }
+    th { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--electric); background: var(--navy-mid); }
+    td { color: var(--white-dim); }
+    footer { border-top: 1px solid var(--border); padding: 36px 40px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+    footer span, footer a { font-family: var(--font-mono); font-size: 11px; color: var(--slate-dim); text-decoration: none; }
+    footer a:hover { color: var(--electric); }
+    .btn-primary { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); background: var(--electric); padding: 15px 36px; text-decoration: none; clip-path: polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%); display: inline-block; }
+    .btn-primary:hover { background: var(--white); }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="nav-logo"><img src="/logo.jpg" alt="E-CLARX LLC" /></a>
+    <ul class="nav-links">
+      <li><a href="/apps/verified-reviews-audit" >Overview</a></li>
+      <li><a href="/apps/verified-reviews-audit/docs">Docs</a></li>
+      <li><a href="/apps/verified-reviews-audit/faq" >FAQ</a></li>
+      <li><a href="/apps/verified-reviews-audit/changelog" >Changelog</a></li>
+      <li><a href="/apps/verified-reviews-audit/engineering" >Engineering</a></li>
+      <li><a href="/apps/verified-reviews-audit/support" >Support</a></li>
+      <li><a href="/apps/verified-reviews-audit/privacy" >Privacy</a></li>
+    </ul>
+  </nav>
+  <main class="wrap">
+
+    <div class="page-eyebrow">Engineering Case Study</div>
+    <h1>Validating the <em>engine.</em></h1>
+    <p class="lede">How the verification engine behind TallySeal shipped: an external ground-truth benchmark, a measured error rate with a stated direction of error, and a known-answer battery that gates every release.</p>
+
+    <h2>The problem</h2>
+    <p>TallySeal audits a store's product reviews and verifies which reviewers actually purchased the product they reviewed, by matching each review against the store's full order history: email identity, product family, and date relationship. The verdict engine is the product. If it is wrong, the merchant publishes a false claim. So the interesting engineering question was never whether the matching could be built, but how to know its error rate, in which direction it errs, and whether any change makes it better or worse.</p>
+
+    <h2>A deliberate non-LLM core</h2>
+    <p>The first real design decision was to make the verdict engine deterministic. A language model could plausibly judge "is this reviewer the same person as this buyer," but a deterministic pipeline gives something a model never can here: every verdict is reproducible and carries a mechanical reason, like <code>no_matching_order</code> or <code>purchased_after_review</code>. The pipeline is email normalization (gmail dot-folding, plus-tag stripping), bounded fuzzy tiers with edit-distance limits, product-family mapping, and date-window logic. For a product whose output a merchant will publicly stand behind, auditability beats generation. Knowing where a model belongs in a system, and where it does not, is part of the job.</p>
+    <p>It was still validated exactly the way a model would be.</p>
+
+    <h2>The eval campaign</h2>
+    <div class="card">
+      <h3>External ground truth, not self-labeled</h3>
+      <p>The benchmark set was reviews independently marked as verified by the review platform itself, in the subset where the platform had direct knowledge: reviews it solicited from known buyer emails. Those labels came from a system with access to the transaction, not from eyeballing outputs.</p>
+    </div>
+    <div class="card">
+      <h3>Result: 99.83% agreement, zero unexplained errors</h3>
+      <p>3,563 of 3,569 benchmark reviews agreed. All six disagreements traced to one boundary: purchases predating the order-history floor the engine had access to at the time.</p>
+    </div>
+    <div class="card">
+      <h3>Characterizing the misses</h3>
+      <p>Agreement on the easy subset is not the whole story, so every one of the 4,154 reviews the engine declined to verify was decomposed into failure classes: email variants the normalizer should catch, same-name-different-domain candidates, typo-distance candidates, purchases of a different product family (correctly declined), and reviews with no order trace at all across four years of history. Counting every fuzzy candidate as a real buyer put the false-negative ceiling at roughly 2 to 3% of all reviews.</p>
+      <p>That number shaped the product. Exact matches say <strong>verified</strong>; fuzzy-tier matches say <strong>likely match</strong> instead of borrowing certainty they do not have. The direction of error is deliberate: wrongly verifying is far worse than wrongly declining.</p>
+    </div>
+    <div class="card">
+      <h3>Known-answer battery as a release gate</h3>
+      <p>The decomposition classes became a permanent synthetic test battery, built from fixtures with no customer data in the repository: gmail-variant identities, near-miss email typos, same-family and different-family purchases, purchased-after-the-review races, undated reviews. The battery runs in CI, and a change that flips any known answer blocks the release.</p>
+    </div>
+
+    <h2>Where models do the work</h2>
+    <p>The same discipline carries to systems where a model is the right tool. In a production AI creative pipeline built for a marketing team, a Claude judge scores every render against brand rules before human review, a failure classifier separates transient model errors (retried automatically, never re-billed) from content refusals (surfaced, never retried), and per-batch cost accounting keeps model spend a bounded, visible number. Model output there is treated the way TallySeal treats a fuzzy match: unverified until a structural check agrees.</p>
+
+    <h2>The transferable lesson</h2>
+    <p>A decision engine, model-backed or not, needs a measured error rate against ground truth it did not generate, a stated direction-of-error policy, a regression battery that gates releases, and cost telemetry that makes its behavior visible. The cheapest time to build all of that is before the first user sees it.</p>
+
+    <p style="margin-top:36px"><a class="btn-primary" href="/apps/verified-reviews-audit">About the app</a></p>
+
+  </main>
+  <footer>
+    <span>© 2026 E-CLARX LLC. All rights reserved.</span>
+    <span><a href="/">eclarx.com</a> · <a href="/apps/verified-reviews-audit/support">Support</a> · <a href="mailto:info@eclarx.com">info@eclarx.com</a></span>
+  </footer>
+</body>
+</html>
